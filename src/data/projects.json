@@ -1,0 +1,139 @@
+{
+  "updatedAt": "2025-09-11T17:24:30.624Z",
+  "items": [
+    {
+      "id": "26a10b9ff72680888d65f81a2d9d9aaa",
+      "slug": "2409-react-nangteol-hankki",
+      "locale": "ko",
+      "title": "냉털한끼 — 냉장고 재료 기반 레시피 추천 서비스",
+      "date": "2024-09-15",
+      "tags": [
+        "React",
+        "Bootstrap",
+        "JavaScript",
+        "OpenAPI",
+        "Team Project",
+        "Netlify",
+        "Responsive"
+      ],
+      "category": "projects",
+      "summary": "\n냉털한끼는 React와 Bootstrap을 활용해 개발한 냉장고 재료 기반 레시피 추천 서비스입니다. 기획, UI/UX 디자인, 오픈 API 연동, 배포까지 전 과정을 팀으로 수행했으며, 사용자 친화적인 반응형 UI와 데이터 기반 추천 기능을 구현했습니다."
+    },
+    {
+      "id": "26a10b9ff7268024a965ed546b45b8d4",
+      "slug": "2409-react-netflex",
+      "locale": "ko",
+      "title": "NETFLEX — Clone with React",
+      "date": "2024-09-07",
+      "tags": [
+        "React",
+        "Bootstrap",
+        "JavaScript",
+        "UI Clone",
+        "Study",
+        "Vercel"
+      ],
+      "category": "study",
+      "summary": "React와 Bootstrap을 활용해 Netflix UI를 클론 코딩한 스터디 프로젝트입니다. Bootstrap Grid와 Card를 활용한 반응형 UI, hover 인터랙션, 컴포넌트 구조화를 학습했고 Vercel에 배포했습니다."
+    },
+    {
+      "id": "26a10b9ff72680beb9d5c064021c3c40",
+      "slug": "2311-nextjs-hi-we",
+      "locale": "ko",
+      "title": "HI We — 후원자와 피후원자를 연결하는 플랫폼",
+      "date": "2023-12-30",
+      "tags": [
+        "Frontend",
+        "React",
+        "Next.js",
+        "TypeScript",
+        "Recoil",
+        "GraphQL",
+        "API Integration",
+        "UI/UX",
+        "Responsive",
+        "Portfolio"
+      ],
+      "category": "projects",
+      "summary": "HI We는 후원이 필요한 동물 및 단체와 후원자를 연결하는 플랫폼입니다.\nNext.js, React, TypeScript, Recoil, GraphQL을 활용해 랜딩, 회원가입, 후원, 커뮤니티, 마이페이지 등의 주요 기능을 구현했습니다.\n백엔드 API와의 협업을 통해 사용자 중심의 인터페이스와 응답성을 갖춘 환경을 설계하고 구현했습니다."
+    },
+    {
+      "id": "26a10b9ff726806a98aceb9f0579f33f",
+      "slug": "2312-nextjs-portfolio-site",
+      "locale": "ko",
+      "title": "Next.js로 만드는 Portfolio 사이트",
+      "date": "2023-12-28",
+      "tags": [
+        "Frontend",
+        "Next.js",
+        "TypeScript",
+        "TailwindCSS",
+        "Notion API",
+        "Lottie Animation",
+        "SSR",
+        "Portfolio",
+        "SEO",
+        "Vercel"
+      ],
+      "category": "study",
+      "summary": "Next.js 기반의 개인 포트폴리오 사이트로, SSR 지원과 SEO 최적화를 목표로 개발했습니다.\nTailwindCSS, Lottie 애니메이션, Notion API 및 Vercel 배포를 활용해 기능과 디자인을 구현했습니다.\n문서 중심의 구현 과정과 실무 환경 기반 개발 경험을 통해 프론트엔드 역량을 강화했습니다."
+    },
+    {
+      "id": "26a10b9ff72680989e00d041389a6154",
+      "slug": "2309-nextjs-camo",
+      "locale": "ko",
+      "title": "CAMO (Cafe Moment) — 숨은 카페를 발굴하는 커뮤니티 플랫폼",
+      "date": "2023-10-30",
+      "tags": [
+        "Frontend",
+        "Next.js",
+        "TypeScript",
+        "UI/UX",
+        "API Integration",
+        "Team Collaboration",
+        "Project Management",
+        "Portfolio"
+      ],
+      "category": "projects",
+      "summary": "CAMO(Cafe Moment)는 숨겨진 카페를 공유할 수 있는 커뮤니티 플랫폼입니다.\n프론트엔드 전반을 담당하며 UI/UX를 개선, Next.js, React, TypeScript를 활용해 게시글 CRUD, 댓글, 지도 연동 기능을 구현했습니다.\n백엔드 API 협업을 통해 데이터 흐름 관리와 사용자 경험 설계 역량을 강화했습니다."
+    },
+    {
+      "id": "26a10b9ff726807a92f5d0fb9e111916",
+      "slug": "2209-html-css-nonentum",
+      "locale": "ko",
+      "title": "Nonentum — Clone with HTML & CSS",
+      "date": "2022-09-25",
+      "tags": [
+        "HTML",
+        "CSS",
+        "Flexbox",
+        "Grid",
+        "Responsive Web",
+        "UI Clone",
+        "Study",
+        "Web Basics"
+      ],
+      "category": "study",
+      "summary": "HTML과 CSS만을 활용해 Nonentum 웹사이트를 클론 코딩하며 레이아웃 설계와 스타일링 기초를 학습한 스터디 프로젝트입니다. Flexbox와 Grid 연습, 시멘틱 마크업, UI 디테일 구현을 통해 웹 기본기를 강화했습니다."
+    },
+    {
+      "id": "26a10b9ff72680c0b0fbfc127e034a6a",
+      "slug": "2209-htrml-css-kokoa",
+      "locale": "ko",
+      "title": "Kokoa Talk — Clone with HTML & CSS",
+      "date": "2022-09-15",
+      "tags": [
+        "HTML",
+        "TailwindCSS",
+        "Flexbox",
+        "Grid",
+        "Responsive Web",
+        "UI Clone",
+        "Study",
+        "Web Basics"
+      ],
+      "category": "study",
+      "summary": "HTML과 CSS만을 활용해 카카오톡 UI를 클론 코딩하며 웹 레이아웃과 스타일링 기초를 학습한 스터디 프로젝트입니다. Flexbox와 Grid 연습, 시멘틱 태그 활용, UI 디테일 구현을 통해 웹 기초 역량을 강화했습니다."
+    }
+  ]
+}

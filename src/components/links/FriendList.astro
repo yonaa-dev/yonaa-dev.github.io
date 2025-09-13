@@ -1,0 +1,39 @@
+---
+export interface Props {
+  list: Array<{
+    name: string
+    url: string
+    avatar?: string
+    desc?: string
+  }>
+}
+
+const { list } = Astro.props
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {list.map((friend) => (
+    <a
+      href={friend.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+    >
+      <div class="flex items-center space-x-3">
+        {friend.avatar && (
+          <img
+            src={friend.avatar}
+            alt={friend.name}
+            class="w-12 h-12 rounded-full object-cover"
+          />
+        )}
+        <div>
+          <h3 class="font-semibold text-gray-900">{friend.name}</h3>
+          {friend.desc && (
+            <p class="text-sm text-gray-600">{friend.desc}</p>
+          )}
+        </div>
+      </div>
+    </a>
+  ))}
+</div>

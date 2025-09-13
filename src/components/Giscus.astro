@@ -1,0 +1,41 @@
+---
+/**
+ * giscus.app에서 발급받은 값으로 이미 채워져 있음
+ * - repo: yonaa-dev/yonaa-dev.github.io
+ * - repoId: R_kgDOProhWg
+ * - category: Announcements
+ * - categoryId: DIC_kwDOProhWs4CvOn7
+ */
+const repo      = 'yonaa-dev/yonaa-dev.github.io'
+const repoId    = 'R_kgDOProhWg'
+const category  = 'Announcements'
+const categoryId= 'DIC_kwDOProhWs4CvOn7'
+const mapping = 'pathname'            // 페이지 경로 기준으로 스레드 매핑
+const theme = 'preferred_color_scheme'
+const lang = 'ko'
+const inputPosition = 'top'
+const loading = 'lazy'
+---
+
+<!-- 주석: 한 페이지에 Giscus 스크립트는 1개만! -->
+<section id="comments" class="mt-6 sm:mt-8" aria-label="Comments">
+  <script
+    src="https://giscus.app/client.js"
+    data-repo={repo}
+    data-repo-id={repoId}
+    data-category={category}
+    data-category-id={categoryId}
+    data-mapping={mapping}
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position={inputPosition}
+    data-theme={theme}
+    data-lang={lang}
+    data-loading={loading}
+    crossorigin="anonymous"
+    async
+  ></script>
+
+  <!-- <noscript>댓글을 보려면 JavaScript를 활성화하세요 (Giscus).</noscript> -->
+</section>

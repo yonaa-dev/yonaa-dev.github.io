@@ -1,0 +1,149 @@
+---
+title: "Next.js로 만드는 Portfolio 사이트"
+description: "Next.js 기반의 개인 포트폴리오 사이트로, SSR 지원과 SEO 최적화를 목표로 개발했습니다.\nTailwindCSS, Lottie 애니메이션, Notion API 및 Vercel 배포를 활용해 기능과 디자인을 구현했습니다.\n문서 중심의 구현 과정과 실무 환경 기반 개발 경험을 통해 프론트엔드 역량을 강화했습니다."
+pubDate: "2023-12-28"
+tags: ["Frontend", "Next.js", "TypeScript", "TailwindCSS", "Notion API", "Lottie Animation", "SSR", "Portfolio", "SEO", "Vercel"]
+slug: "2312-nextjs-portfolio-site"
+locale: "ko"
+category: "study"
+heroImage:
+  src: "../../assets/notion/26a10b9ff726806a98aceb9f0579f33f/e069f6b7-cover.webp"
+  alt: "Next.js 기반 포트폴리오 사이트 메인 화면"
+  color: "#FAFAFA"
+updatedDate: "2025-09-11T16:39:00.000Z"
+---
+
+**프로젝트명**: Next.js Portfolio
+
+
+**기간**: Dec 2022 (1 day)
+
+
+**역할**: 개인 프로젝트 (프론트엔드 전반)
+
+
+## 1. **프로젝트 소개**
+
+
+개인 포트폴리오를 단순 정적인 페이지가 아니라, **SEO 최적화와 콘텐츠 관리 자동화**가 가능한 형태로 만들고자 시작한 프로젝트입니다.
+
+
+Next.js의 **서버 사이드 렌더링(SSR)**과 **정적 사이트 생성(SSG)**을 활용하여 검색엔진 친화적인 포트폴리오를 구축했습니다.
+
+- 프로젝트 메인 랜딩 화면
+
+![image1.png](/assets/notion/26a10b9ff726806a98aceb9f0579f33f/1f92fa46-image1.png)
+
+
+## 2. **기술 스택**
+
+- **Framework**: Next.js, React
+- **언어**: TypeScript
+- **스타일링**: TailwindCSS
+- **애니메이션**: Lottie Animation
+- **데이터 관리**: Notion API
+- **배포**: Vercel
+
+## 3. **주요 기능**
+
+
+### SSR & SEO 최적화
+
+- Next.js의 SSR 기능을 적용하여 검색엔진에 잘 노출되는 구조를 구현
+- 메타 태그, Open Graph 태그를 삽입해 링크 공유 시 미리보기 강화
+
+💻 _[코드 스니펫 예시]_
+
+
+```typescript
+// pages/_document.tsx
+import { Html, Head, Main, NextScript } from 'next/document';
+
+export default function Document() {
+  return (
+    <Html lang="ko">
+      <Head>
+        <meta name="description" content="개인 포트폴리오 사이트" />
+        <meta property="og:title" content="Next.js Portfolio" />
+        <meta property="og:type" content="website" />
+      </Head>
+      <body>
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  );
+}
+```
+
+
+### Notion API 연동
+
+- 프로젝트/게시글 콘텐츠를 Notion 데이터베이스에서 불러와 자동 반영
+- 별도의 CMS 없이 **Notion을 Headless CMS**처럼 활용
+
+💻 _[코드 스니펫 예시]_
+
+
+```typescript
+// lib/notion.ts
+import { Client } from '@notionhq/client';
+
+const notion = new Client({ auth: process.env.NOTION_TOKEN });
+
+export async function getProjects() {
+  const response = await notion.databases.query({
+    database_id: process.env.NOTION_DB_ID!,
+  });
+  return response.results;
+}
+```
+
+- Notion 데이터베이스 스크린샷
+
+    ![image2.png](/assets/notion/26a10b9ff726806a98aceb9f0579f33f/7c08fb1a-image2.png)
+
+
+### TailwindCSS & Lottie Animation
+
+- 반응형 UI 설계 → 모바일·데스크톱 모두 최적화
+- Lottie 애니메이션으로 인터랙티브하고 현대적인 디자인 구현
+- 반응형 레이아웃 비교 (PC / Mobile)
+
+![image3.png](/assets/notion/26a10b9ff726806a98aceb9f0579f33f/d357ff87-image3.png)
+
+
+![image4.png](/assets/notion/26a10b9ff726806a98aceb9f0579f33f/dd6180a3-image4.png)
+
+
+## 4. **개발 과정에서의 도전과 해결**
+
+- **Next.js 버전 차이**: Link, Image 컴포넌트 사용법이 달라 발생한 호환성 문제를 공식 문서 참고 및 코드 리팩토링으로 해결
+- **Notion API 제한**: 응답 데이터 구조가 복잡했지만, 타입스크립트 타입 정의와 유틸 함수화를 통해 관리 가능하도록 개선
+- ~~**SEO 검증**~~~~: Lighthouse와 Search Console을 활용해 SEO 성능을 측정 및 개선~~
+
+## 5. **배포 경험 (Vercel)**
+
+- Vercel과 GitHub 연동으로 자동 배포 파이프라인 구성
+- 브랜치 푸시 시 자동 프리뷰 배포 → 변경사항 즉시 확인 가능
+- 배포 환경에서 `.env` 설정 관리 경험
+
+## 6. **배운 점**
+
+- **Next.js의 렌더링 방식(SSR, SSG, CSR)**을 프로젝트 전반에서 실습하며 차이를 명확히 이해
+- **Notion API를 Headless CMS처럼 활용**해 콘텐츠 관리 자동화 가능성을 배움
+- **SEO 최적화와 배포 파이프라인 설계** 경험을 통해 실제 서비스 운영 감각 강화
+- 작은 디테일(자동 연도 업데이트, 환경변수 처리 등)이 유지보수성과 사용자 경험에 얼마나 중요한지 체감
+
+## 7. **정리**
+
+
+이 프로젝트는 단순히 “포트폴리오 사이트”를 만드는 데 그치지 않고,
+
+
+**실제 서비스처럼 관리·확장 가능한 구조**를 설계하는 경험이 되었습니다.
+
+- 기술적으로는 **Next.js, TypeScript, TailwindCSS, Notion API**를 심도 있게 다뤄봤고,
+- 운영 관점에서는 **Vercel 배포와 SEO 최적화**를 직접 적용해 본 점이 가장 큰 성과였습니다.
+
+앞으로는 이 구조를 확장해 블로그 기능을 추가하거나, 다국어 지원(Localization)을 시도해보고 싶습니다.

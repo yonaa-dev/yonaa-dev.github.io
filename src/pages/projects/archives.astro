@@ -1,0 +1,79 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import { getCollection } from 'astro:content'
+import { Button } from 'astro-pure/user'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import ProjectPreview from '@/components/projects/ProjectPreview.astro'
+
+export const prerender = true
+
+// 1) 전체 프로젝트 수집 (prod에선 draft 제외) + 최신순 정렬
+const allProjects: CollectionEntry<'projects'>[] = (
+  await getCollection('projects', ({ data }) =>
+    import.meta.env.DEV ? true : !data.draft
+  )
+).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+
+// 2) 연도별 그룹핑 (블로그의 groupCollectionsByYear와 동일한 역할)
+function groupByYear(items: CollectionEntry<'projects'>[]) {
+  const map = new Map<number, CollectionEntry<'projects'>[]>()
+  for (const it of items) {
+    const y = (it.data.pubDate as Date).getFullYear()
+    if (!map.has(y)) map.set(y, [])
+    map.get(y)!.push(it)
+  }
+  // 연도 내에서도 최신순 유지
+  for (const [year, arr] of map) {
+    arr.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  }
+  // 최신 연도가 위로 오게 정렬
+  return Array.from(map.entries()).sort((a, b) => b[0] - a[0])
+}
+const allProjectsByYear = groupByYear(allProjects)
+
+const meta = {
+  description: 'A list of all the years of creating my projects',
+  title: 'Project Archives'
+}
+---
+
+<PageLayout {meta}>
+  <Button title="Back" href="/projects" variant="back" />
+
+  <main class="mt-6 lg:mt-10">
+    <div id="content-header" class="animate">
+      <h1 class="mb-6 text-3xl font-medium">Project Archives</h1>
+    </div>
+
+    {allProjects.length === 0 && <p>No projects yet.</p>}
+
+    <section id="content" class="animate" aria-label="Project list">
+      {
+        allProjectsByYear.map(([year, projects]) => (
+          <div class="relative mt-20">
+            <h2
+              class="absolute -start-6 -top-16 z-0 text-9xl font-bold text-transparent opacity-10"
+              style="-webkit-text-stroke-width:2px;-webkit-text-stroke-color:hsl(var(--foreground)/var(--un-text-opacity))"
+            >
+              <samp>{year}</samp>
+            </h2>
+
+            <p class="px-5 text-muted-foreground">
+              {projects.length} project{projects.length > 1 && 's'}
+            </p>
+
+            <ul class="flex flex-col text-start">
+              {projects.map((p) => (
+                <ProjectPreview
+                  project={p}
+                  detailed={false}
+                  class="border-0 bg-transparent py-2"
+                />
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </section>
+  </main>
+</PageLayout>

@@ -1,0 +1,185 @@
+---
+// src/components/projects/ProjectPreview.astro
+
+import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import { render, type CollectionEntry } from 'astro:content'
+import { cn } from 'astro-pure/utils'
+import { Button, FormattedDate, Icon } from 'astro-pure/user'
+
+interface Props {
+  project: CollectionEntry<'projects'>
+  detailed?: boolean
+  class?: string
+}
+
+const { project, detailed = true, class: className } = Astro.props
+
+const { data } = project
+const { remarkPluginFrontmatter } = await render(project)
+
+const hero = data.heroImage
+
+// GH Pages 서브경로 대응
+const base = import.meta.env.BASE_URL || '/'
+const withBase = (p?: string) => (p?.startsWith('/') ? base + p.slice(1) : p)
+
+// 정적 import 메타데이터 타입 가드
+const isMeta = (v: unknown): v is ImageMetadata =>
+  !!v && typeof v === 'object' && 'src' in (v as any) && 'width' in (v as any) && 'height' in (v as any)
+
+// 날짜: pubDate 우선
+const postDate = data.pubDate ?? data.updatedDate
+const href = `/projects/${data.slug}`
+
+// 태그 정리
+const rawTags = data.tags
+const safeTags =
+  Array.isArray(rawTags)
+    ? rawTags.map(String).filter(Boolean)
+    : typeof rawTags === 'string' && rawTags
+      ?(rawTags as string).split(',').map((s: string) => s.trim()).filter(Boolean)
+      : []
+---
+
+<li
+  class={cn(
+    'post-preview group/card relative flex flex-col rounded-2xl border bg-background px-5 py-2.5 transition-colors ease-in-out hover:bg-muted',
+    detailed ? 'max-sm:px-4 sm:py-5' : undefined,
+    className
+  )}
+  style={
+    detailed && data.heroImage?.color
+      ? `--preview-highlight:color-mix(in srgb, ${data.heroImage.color} 40%, hsl(var(--foreground)/var(--un-text-opacity,1)));
+        --preview-highlight-bg:hsl(from ${data.heroImage.color} h s l / 20%)`
+      : undefined
+  }
+>
+  <a
+    class={cn(
+      'group/link flex w-full flex-col transition-all hover:text-primary',
+      !detailed ? 'sm:flex-row' : undefined,
+      detailed && data.heroImage ? 'max-md:pt-24' : undefined
+    )}
+    href={href}
+    aria-label={data.title}
+    data-astro-prefetch
+  >
+    {detailed && hero?.src && (
+      isMeta(hero.src) ? (
+        /* 정적 import(메타데이터) → <Image> 사용 */
+        <Image
+          src={hero.src}
+          alt={hero.alt ?? data.title}
+          loading="eager"
+          class="cover-image absolute end-0 top-0 z-0 h-2/3 w-full rounded-2xl object-cover opacity-50 transition-opacity duration-300 group-hover/card:opacity-70 md:h-full md:w-3/5"
+        />
+      ) : (
+        /* 문자열 경로/원격 URL → <img> 사용 */
+        <img
+          src={withBase(String(hero.src))}
+          alt={hero.alt ?? data.title}
+          loading="eager"
+          decoding="async"
+          class="cover-image absolute end-0 top-0 z-0 h-2/3 w-full rounded-2xl object-cover opacity-50 transition-opacity duration-300 group-hover/card:opacity-70 md:h-full md:w-3/5"
+          width={hero.width ?? 1200}
+          height={hero.height ?? 630}
+        />
+      )
+    )}
+
+    <FormattedDate
+      class="min-w-[95px] py-1 text-xs"
+      date={postDate instanceof Date ? postDate : new Date(postDate)}
+    />
+
+    <div class="z-10 flex-grow">
+      <div class="flex justify-between">
+        <div class={detailed ? 'font-medium' : undefined}>
+          {data.draft && <span class="text-red-500">(Draft) </span>}
+          {data.title}
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+          fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+          class="preview-redirect my-1 stroke-muted-foreground group-hover/link:stroke-primary"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"
+            class="translate-x-4 scale-x-0 transition-all duration-300 ease-in-out group-hover/link:translate-x-1 group-hover/link:scale-x-100" />
+          <polyline points="12 5 19 12 12 19"
+            class="translate-x-0 transition-all duration-300 ease-in-out group-hover/link:translate-x-1" />
+        </svg>
+      </div>
+
+      {detailed && (
+        <>
+          {data.description && (
+            <p class={cn(
+              'line-clamp-2 pt-1 text-sm text-muted-foreground sm:line-clamp-3',
+              data.heroImage ? 'sm:me-24' : undefined
+            )}>
+              {data.description}
+            </p>
+          )}
+
+          <div class="flex items-center gap-2 py-1.5 text-sm italic leading-4 text-muted-foreground sm:py-3">
+            {remarkPluginFrontmatter?.minutesRead && (
+              <span class="flex items-center gap-1">
+                <Icon name="time" class="size-4" />
+                {remarkPluginFrontmatter.minutesRead}
+              </span>
+            )}
+            {data.locale && (
+              <span class="flex items-center gap-1">
+                <Icon name="earth" class="size-4" /> {data.locale}
+              </span>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  </a>
+
+  {detailed && safeTags.length > 0 && (
+    <ul class="tag-list mt-1 flex flex-wrap gap-2">
+      {safeTags.map((t: string) => (
+        <li>
+          <Button href={`/projects/tags/${encodeURIComponent(t)}`} variant="pill">
+            {t}
+          </Button>
+        </li>
+      ))}
+    </ul>
+  )}
+</li>
+
+<style>
+  .post-preview {
+    --preview-highlight-final: var(--preview-highlight, hsl(var(--primary) / var(--un-text-opacity, 1)));
+  }
+  .post-preview:hover {
+    &,
+    & .tag-list a {
+      background-color: var(--preview-highlight-bg, hsl(var(--muted) / var(--un-bg-opacity, 1))) !important;
+    }
+    & > a,
+    & .tag-list a:hover {
+      color: var(--preview-highlight-final) !important;
+    }
+    & > a .preview-redirect {
+      stroke: var(--preview-highlight-final) !important;
+    }
+  }
+  .cover-image {
+    mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+    -ms-mask-image: -ms-linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+    -webkit-mask-image: -webkit-linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+  }
+  @media (max-width: 768px) {
+    .cover-image {
+      mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+      -ms-mask-image: -ms-linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+      -webkit-mask-image: -webkit-linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+    }
+  }
+</style>

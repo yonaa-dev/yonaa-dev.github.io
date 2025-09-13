@@ -1,0 +1,168 @@
+---
+title: "냉털한끼 — 냉장고 재료 기반 레시피 추천 서비스"
+description: "\n냉털한끼는 React와 Bootstrap을 활용해 개발한 냉장고 재료 기반 레시피 추천 서비스입니다. 기획, UI/UX 디자인, 오픈 API 연동, 배포까지 전 과정을 팀으로 수행했으며, 사용자 친화적인 반응형 UI와 데이터 기반 추천 기능을 구현했습니다."
+pubDate: "2024-09-15"
+tags: ["React", "Bootstrap", "JavaScript", "OpenAPI", "Team Project", "Netlify", "Responsive"]
+slug: "2409-react-nangteol-hankki"
+locale: "ko"
+category: "projects"
+heroImage:
+  src: "../../assets/notion/26a10b9ff72680888d65f81a2d9d9aaa/dd2eefb9-cover.png"
+  alt: "냉털한끼 프로젝트 메인 UI — 냉장고 재료 기반 추천 화면"
+  color: "#FF6347"
+updatedDate: "2025-09-11T16:37:00.000Z"
+---
+
+**프로젝트명**: 냉털한끼
+
+
+**기간**: Sep 2024 (~7 days)
+
+
+**역할**: 프론트엔드 (UI 개발, Bootstrap 적용, OpenAPI 연동)
+
+
+**배포**: [Netlify 배포본](https://bejewelled-cuchufli-22921c.netlify.app/)
+
+
+**저장소**: [GitHub Repository](https://github.com/theh4ru/react-2nd-team5)
+
+
+## 1. 프로젝트 개요
+
+
+‘냉털한끼’는 **냉장고에 있는 재료를 입력하면 적절한 레시피를 추천해주는 웹 애플리케이션**입니다.
+
+
+단순 클론이 아니라, **기획 단계부터 UI/UX 디자인, 오픈 API 연동, 구현, 배포까지** 전 과정을 팀이 함께 진행한 프로젝트입니다.
+
+
+사용자 친화적 UI를 목표로 Bootstrap을 적용해 반응형 레이아웃을 구현했고, Open API를 통해 실제 레시피 데이터를 가져와 표시하도록 개발했습니다.
+
+
+## 2. 기술 스택
+
+- **Frontend**: React (Create React App), Bootstrap 5
+- **Styling**: Bootstrap Grid / Card / Utility Class + Custom CSS
+- **API**: Open Recipe API 활용 (재료 기반 레시피 검색/추천)
+- **협업 도구**: GitHub, Figma(디자인), Notion(기획/일정 관리)
+- **배포**: Netlify
+
+## 3. 주요 기능
+
+- **재료 입력**: 사용자가 보유한 재료를 입력 및 추가/삭제 가능
+- **레시피 추천**: 입력된 재료 기반으로 Open API를 통해 레시피 데이터 요청
+- **추천 결과 표시**: Bootstrap Card UI로 레시피 이미지, 이름, 조리 시간 표시
+- **반응형 UI**: Bootstrap Grid로 모바일~데스크톱 환경 모두 최적화
+- **UI/UX 디자인 반영**: 기획 단계에서 제작한 와이어프레임과 프로토타입을 기반으로 구현
+1. 초기 메인 화면 (재료 입력창 + 버튼)
+
+    ![image1.png](/assets/notion/26a10b9ff72680888d65f81a2d9d9aaa/0f5b35bd-image1.png)
+
+
+    ![image2.png](/assets/notion/26a10b9ff72680888d65f81a2d9d9aaa/76ebf52f-image2.png)
+
+2. 추천 레시피 카드 리스트 (가로 스크롤 or Grid)
+
+    ![image3.png](/assets/notion/26a10b9ff72680888d65f81a2d9d9aaa/4397579f-image3.png)
+
+3. 모바일 뷰 화면 (Bootstrap 반응형 확인)
+
+![image4.png](/assets/notion/26a10b9ff72680888d65f81a2d9d9aaa/4ce60e76-image4.png)
+
+1. 팀 기획 산출물 (와이어프레임, Figma 디자인 캡처)
+
+![image5.png](/assets/notion/26a10b9ff72680888d65f81a2d9d9aaa/48486ebf-image5.png)
+
+
+![image6.png](/assets/notion/26a10b9ff72680888d65f81a2d9d9aaa/12636e10-image6.png)
+
+
+## 4. 코드 스니펫 (대표 기능)
+
+
+### 재료 입력 & 리스트 관리
+
+
+```javascript
+function IngredientManager() {
+  const [ingredients, setIngredients] = useState([]);
+  const [input, setInput] = useState("");
+
+  const addIngredient = () => {
+    if (!input.trim()) return;
+    setIngredients([...ingredients, input.trim()]);
+    setInput("");
+  };
+
+  const removeIngredient = (item) => {
+    setIngredients(ingredients.filter(i => i !== item));
+  };
+
+  return (
+    <div>
+      <div className="d-flex mb-3">
+        <input
+          className="form-control me-2"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="재료를 입력하세요"
+        />
+        <button className="btn btn-primary" onClick={addIngredient}>추가</button>
+      </div>
+      <ul className="list-group">
+        {ingredients.map((item, idx) => (
+          <li key={idx} className="list-group-item d-flex justify-content-between">
+            {item}
+            <button className="btn btn-sm btn-outline-danger" onClick={() => removeIngredient(item)}>삭제</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+
+### 레시피 추천 API 연동
+
+
+```javascript
+async function fetchRecipes(ingredients) {
+  const query = ingredients.join(",");
+  const res = await fetch(`https://api.example.com/recipes?ingredients=${query}`);
+  if (!res.ok) throw new Error("API 요청 실패");
+  return res.json();
+}
+```
+
+
+## 5. 팀 협업 & 역할
+
+- **본인 역할**
+    - Bootstrap을 활용한 **UI 레이아웃 및 반응형 화면 구현**
+    - **Open API 연동 및 데이터 표시 로직** 구현
+    - 레시피 카드 컴포넌트 구조화 및 상태 관리
+- **팀 협업 방식**
+    - **기획 단계**: 아이디어 도출 → 와이어프레임(Figma) 제작
+    - **디자인 단계**: UI 프로토타입 작성, 피드백 반영
+    - **개발 단계**: GitHub 브랜치 전략 사용 (feature 단위 개발 → main merge)
+    - **회의 진행**: Notion을 활용해 일정 및 진행 상황 공유
+
+## 6. 배운 점
+
+- **Bootstrap 첫 적용**: CSS를 직접 다루는 대신 Grid와 Card 시스템으로 빠르게 UI 제작 가능
+- **Open API 활용**: 실시간 데이터를 가져와 서비스에 적용하는 경험 → API 문서 이해와 데이터 처리 역량 강화
+- **팀 협업 경험**: 기획 → 디자인 → 개발 → 배포까지 전체 사이클 경험, 역할 분담과 의사소통의 중요성 체득
+- **배포 경험**: Netlify를 통한 CI/CD 파이프라인 이해
+
+## 7. 정리
+
+
+냉털한끼 프로젝트는 단순히 UI 클론이 아니라, **아이디어를 서비스로 구현하는 전 과정을 경험**한 팀 프로젝트였습니다.
+
+- React와 Bootstrap으로 UI를 만들고,
+- Open API를 연동해 실제 데이터 기반 서비스를 구현했으며,
+- 팀 협업을 통해 기획부터 배포까지 프로젝트 라이프사이클을 경험한 점이 가장 큰 성과였습니다.
+
+앞으로는 API 확장, 사용자 계정 시스템, 레시피 저장 기능 등을 추가해 **실제 서비스로 발전시킬 수 있는 가능성**을 열어두었습니다.

@@ -1,0 +1,73 @@
+---
+import type { GetStaticPaths, Page } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+import { getCollection } from 'astro:content'
+
+import { Paginator } from 'astro-pure/components/pages'
+import { Button } from 'astro-pure/user'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import config from '@/site-config'
+import ProjectPreview from '@/components/projects/ProjectPreview.astro'
+
+function normalizeTags(v: unknown): string[] {
+  if (Array.isArray(v)) return v.map(String).map(s => s.trim()).filter(Boolean)
+  if (typeof v === 'string') return v.split(',').map(s => s.trim()).filter(Boolean)
+  return []
+}
+
+export const prerender = true
+
+export const getStaticPaths: GetStaticPaths = async ({ paginate }) => {
+  // 1) 전체 프로젝트 수집 (prod에서는 draft 제외)
+  const all = (await getCollection('projects', ({ data }) =>
+    import.meta.env.DEV ? true : !data.draft
+  )).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+
+  // 2) 유니크 태그 목록 추출
+  const uniqueTags = Array.from(new Set(all.flatMap(p => normalizeTags((p.data as any).tags)))).sort()
+
+  // 3) 태그별로 필터 → 페이지네이션
+  return uniqueTags.flatMap((tag) => {
+    const filtered = all.filter(p => normalizeTags((p.data as any).tags).includes(tag))
+    return paginate(filtered, {
+      pageSize: config.content.blogPageSize,
+      params: { tag }
+    })
+  })
+}
+
+interface Props {
+  page: Page<CollectionEntry<'projects'>>
+}
+
+const { page } = Astro.props
+const { tag = '' } = Astro.params
+
+const meta = {
+  description: `View all projects with the tag - ${tag}`,
+  title: `Tag: ${tag}`
+}
+
+const paginationProps = {
+  ...(page.url.prev && { prevUrl: { text: '← Previous', url: page.url.prev } }),
+  ...(page.url.next && { nextUrl: { text: 'Next →', url: page.url.next } })
+}
+---
+
+<PageLayout {meta}>
+  <Button title="Back" href="/projects" variant="back" />
+  <main class="mt-6 lg:mt-10">
+    <div id="content-header" class="animate">
+      <h1 class="mb-6 flex items-end gap-x-2 text-3xl font-medium">
+        Tags: <span class="text-2xl">#{tag}</span>
+      </h1>
+    </div>
+
+    <section id="content" class="animate" aria-label="Project list">
+      <ul class="flex flex-col gap-y-3 text-start">
+        {page.data.map((project) => <ProjectPreview project={project} detailed />)}
+      </ul>
+      <Paginator {...paginationProps} />
+    </section>
+  </main>
+</PageLayout>

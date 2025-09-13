@@ -1,0 +1,115 @@
+---
+import type { GetStaticPaths, Page } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+import { getCollection } from 'astro:content'
+
+import { Paginator } from 'astro-pure/components/pages'
+import { Button, Icon } from 'astro-pure/user'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import config from '@/site-config'
+import ProjectPreview from '@/components/projects/ProjectPreview.astro'
+
+export const prerender = true
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const collections = (await getCollection('projects', ({ data }) =>
+    import.meta.env.DEV ? true : !data.draft
+  ))
+    .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+
+  // uniqueTags 계산
+  const uniqueTags = Array.from(new Set(
+    collections.flatMap((p) => {
+      const v = p.data.tags
+      if (Array.isArray(v)) return v.map(String)
+      if (typeof v === 'string') return (v as string).split(',').map((s) => s.trim())
+      return []
+    })
+  )).filter(Boolean).sort()
+
+  const collectionsCount = collections.length
+
+  return paginate(collections, {
+    pageSize: config.content.blogPageSize,
+    props: { uniqueTags, collectionsCount }
+  })
+}) satisfies GetStaticPaths
+
+interface Props {
+  page: Page<CollectionEntry<'projects'>>
+  uniqueTags: string[]
+  collectionsCount: number
+}
+
+const { page, uniqueTags, collectionsCount } = Astro.props
+
+const meta = {
+  description: 'Some posts or archives of my projects',
+  title: 'Projects'
+}
+
+const paginationProps = {
+  ...(page.url.prev && { prevUrl: { text: '← Previous Projects', url: page.url.prev } }),
+  ...(page.url.next && { nextUrl: { text: 'Next Projects →', url: page.url.next } })
+}
+---
+
+<PageLayout {meta}>
+  <Button title="Back" href="/" variant="back" />
+  <main class="mt-6 lg:mt-10">
+    <div id="content-header" class="animate">
+      <h1 class="mb-6 mt-6 text-3xl font-medium sm:mt-10">Projects</h1>
+    </div>
+
+    {
+      page.data.length === 0 ? (
+        <p>No projects yet.</p>
+      ) : (
+        <div class="grid gap-y-16 sm:grid-cols-[3fr_1fr] sm:gap-x-8">
+          <section aria-label="Projects list" class="animate" id="content">
+            {/* header */}
+            <div class="mb-3 flex flex-col justify-between text-sm sm:mb-5 sm:flex-row">
+              <span class="text-muted-foreground">
+                Page {page.currentPage} - Showing {page.data.length} of {collectionsCount} projects
+              </span>
+              {/* 프로젝트 연도별 아카이브 페이지가 없으면 이 링크는 숨겨둠 */}
+              <a aria-label='View all projects by years' href='/projects/archives' data-astro-prefetch>
+                View all projects by years →
+              </a>
+            </div>
+
+            {/* posts */}
+            <ul class="flex flex-col gap-y-4 text-start">
+              {page.data.map((p) => (
+                <ProjectPreview project={p} detailed />
+              ))}
+            </ul>
+
+            <Paginator {...paginationProps} />
+          </section>
+
+          {/* sidebar */}
+          {!!uniqueTags.length && (
+            <aside class="animate" id="sidebar">
+              <h2 class="mb-4 flex items-center text-lg font-semibold">
+                <Icon name="tag-2" class="me-2" /> Tags
+              </h2>
+              <ul class="text-bgColor flex flex-wrap gap-2">
+                {uniqueTags.map((tag) => (
+                  <li>
+                    <Button href={`/projects/tags/${encodeURIComponent(tag)}`} variant="pill">{tag}</Button>
+                  </li>
+                ))}
+              </ul>
+
+              {/* /projects/tags 인덱스 페이지가 있을 때만 유지 */}
+              <span class="mt-4 block sm:text-end">
+                <a href="/projects/tags" data-astro-prefetch>View all →</a>
+              </span>
+            </aside>
+          )}
+        </div>
+      )
+    }
+  </main>
+</PageLayout>

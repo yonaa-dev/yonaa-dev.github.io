@@ -1,0 +1,48 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content'
+import ProjectPost from '@/layouts/ProjectPost.astro'
+import { Paginator } from 'astro-pure/components/pages'
+
+export const prerender = true
+
+export async function getStaticPaths() {
+  // draft 제외(프로덕션)
+  const items = await getCollection('projects', ({ data }) =>
+    import.meta.env.DEV ? true : !data.draft
+  )
+  // 날짜 내림차순으로 정렬
+  const projects = items.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+
+return projects.map((p, idx) => {
+    const prev = projects[idx + 1] // 최신순이라 +1이 older=Previous
+    const next = projects[idx - 1] // -1이 newer=Next
+    return {
+      params: { id: p.data.slug },
+      props: {
+        project: p,
+        prevUrl: prev ? { url: `/projects/${prev.data.slug}`, text: prev.data.title, srLabel: 'Previous project' } : null,
+        nextUrl: next ? { url: `/projects/${next.data.slug}`, text: next.data.title, srLabel: 'Next project' } : null,
+      },
+    }
+  })
+}
+
+type Props = {
+  project: CollectionEntry<'projects'>
+  prevUrl?: { url: string; text?: string; srLabel?: string } | null
+  nextUrl?: { url: string; text?: string; srLabel?: string } | null
+}
+const { project, prevUrl, nextUrl } = Astro.props
+
+// 본문/헤딩/플러그인 frontmatter 추출
+const { Content, headings, remarkPluginFrontmatter } = await render(project)
+
+// (선택) 추천에 쓸 전체 목록을 넘기려면 아래 주석 해제
+// const all = (await getCollection('projects'))
+//   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+---
+
+<ProjectPost {project} {headings} {remarkPluginFrontmatter}>
+  <Content />
+  {(prevUrl || nextUrl) && <Paginator prevUrl={prevUrl || undefined} nextUrl={nextUrl || undefined} />}
+</ProjectPost>

@@ -1,0 +1,74 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "src/**"
+      - "public/**"
+      - "scripts/**"
+      - "package*.json"
+      - "astro.config.*"
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: read
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      # 🔐 Notion 값 주입 (.env 생성)
+      - name: Create env file
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          # NOTION_DATABASE_ID는 변수(vars)나 시크릿 중 편한 쪽 하나만 써도 됨
+          NOTION_DATABASE_ID: ${{ vars.NOTION_DATABASE_ID }}
+        run: |
+          {
+            echo "NOTION_TOKEN=${NOTION_TOKEN}"
+            echo "NOTION_DATABASE_ID=${NOTION_DATABASE_ID}"
+          } > .env
+
+      # ⛳️ Notion → 로컬 캐시/콘텐츠 생성
+      - name: Cache Notion to local files
+        run: node --env-file=.env scripts/notion-cache.mjs
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,187 @@
+---
+import { Button, Collapse, Spoiler, Timeline } from 'astro-pure/user'
+import PageLayout from '@/layouts/CommonPage.astro'
+import Substats from '@/components/about/Substats.astro'
+import ToolSection from '@/components/about/ToolSection.astro'
+import { Image } from 'astro:assets'
+
+// 아래 3개는 “프로젝트/스폰서” 섹션 재사용용 (원치 않으면 import/섹션 제거)
+import ProjectSection from '@/components/projects/ProjectSection.astro'
+import Sponsorship from '@/components/projects/Sponsorship.astro'
+import Sponsors from '@/components/projects/Sponsors.astro'
+
+// 필요 시만 사용 (GPG 버튼 아이콘 / 후원 QR)
+import KeyIcon from '@/assets/icons/key.svg'
+import wechat from '@/assets/wechat-qrcode.jpg'
+import alipay from '@/assets/alipay-qrcode.jpg'
+
+const headings = [
+  { depth: 2, slug: 'intro', text: 'Intro' },
+  { depth: 2, slug: 'github-activity', text: 'GitHub Activity' },
+  { depth: 2, slug: 'hobbies', text: 'Hobbies' },
+  { depth: 2, slug: 'tools', text: 'Tools' },
+  { depth: 2, slug: 'social-networks', text: 'Social Networks' },
+  { depth: 2, slug: 'featured-projects', text: 'Featured Projects' },
+  { depth: 2, slug: 'gpg-signature', text: 'GPG Signature' },
+  { depth: 2, slug: 'sponsorship', text: 'Sponsorship' },
+  { depth: 2, slug: 'about-blog', text: 'About Blog' }
+]
+---
+
+<PageLayout title="About" {headings} comment>
+  {/* Intro */}
+  <h2 id="intro" class="sr-only">Intro</h2>
+  <p>Frontend Developer</p>
+  <p>
+    <strong>YONA</strong>입니다. UI/UX를 고려한 프론트엔드 개발, 기록과 경험을 좋아합니다.<br/><Spoiler>비 오는 날 커피 + 리팩토링이 국룰 ☕️</Spoiler>
+  </p>
+  <Button title="연락하기" class="w-fit" href="mailto:imyona101@gmail.com" variant="ahead" />
+
+  <h2 id="github-activity">GitHub Activity</h2>
+<p class="text-sm text-muted-foreground">지난 1년간의 기여</p>
+<p>
+  <Image
+    src={`https://ghchart.rshah.org/659eb9/yonaa-dev`}
+    alt="GitHub contributions chart for yonaa-dev"
+    inferSize
+    loading="lazy"
+  />
+</p>
+
+  {/* Hobbies */}
+  <!-- <h2 id="hobbies">Hobbies</h2>
+  <ul>
+    <li>사이드 프로젝트로 UI 컴포넌트 만들기</li>
+    <li>타이포그래피/레이아웃 수집 & 리디자인</li>
+    <li>러닝 + 플레이리스트 큐레이션</li>
+  </ul> -->
+
+  {/* Tools */}
+  <h2 id="tools">Tools</h2>
+  <p>주요 사용 도구:</p>
+  <ToolSection
+    class="mb-5"
+    title="Design"
+    tools={[
+      { name: 'Figma', description: 'UI Design', href: 'https://figma.com', icon: import('simple-icons/icons/figma.svg?raw') },
+      { name: 'Photoshop', description: 'Image Editing', href: 'https://www.adobe.com/products/photoshop', icon: import('@/assets/tools/photoshop.svg?raw') },
+      { name: 'Illustrator', description: 'Vector', href: 'https://www.adobe.com/products/illustrator', icon: import('@/assets/tools/illustrator.svg?raw') }
+    ]}
+  />
+  <ToolSection
+    class="mb-5"
+    title="Productivity"
+    tools={[
+      { name: 'Notion', description: 'Notes / Docs', href: 'https://www.notion.so/', icon: import('@/assets/tools/notion.svg?raw') },
+      { name: 'Chrome', description: 'Browser', href: 'https://www.google.com/chrome/', icon: import('@/assets/tools/chrome.svg?raw') },
+    ]}
+  />
+  <ToolSection
+    class="mb-5"
+    title="Development"
+    tools={[
+      { name: 'VS Code', description: 'IDE', href: 'https://code.visualstudio.com/', icon: import('@/assets/tools/vscode.svg?raw') },
+      { name: 'React', description: 'Web Framework', href: 'https://react.dev/', icon: import('simple-icons/icons/react.svg?raw') }
+    ]}
+  />
+  <ToolSection
+    class="mb-5"
+    title="Environment"
+    tools={[
+      { name: 'macOS', description: 'Main', href: 'https://www.apple.com/macos/', icon: import('@/assets/tools/apple.svg?raw') },
+      { name: 'Windows 11', description: 'Secondary', href: 'https://www.microsoft.com/windows', icon: import('@/assets/tools/windows11.svg?raw') }
+    ]}
+  />
+
+  {/* Social */}
+  <h2 id="social-networks">Social Networks</h2>
+  <Substats
+    stats={[
+      { 
+        platform: 'GitHub',
+        icon: 'github',
+        link: 'https://github.com/yonaa-dev',
+        text: 'followers',
+        api: 'github/yonaa-dev'
+      },
+    ]}
+  />
+
+  {/* Featured Projects (내 프로젝트 위주) */}
+  <h2 id="featured-projects">Featured Projects</h2>
+  <ProjectSection
+    projects={[
+      {
+        name: '🧩 My Blog',
+        description: 'Astro 기반 개인 블로그 테마 커스터마이징 & 성능 최적화',
+        links: [
+          { type: 'site', href: '/' },
+          { type: 'doc', href: '/blog' }
+        ]
+      },
+      // 템플릿 제공자 크레딧(원하면 유지)
+      {
+        name: '🍭 Astro Theme Pure (credit)',
+        description: '현재 사이트 테마 기반 — template by cworld',
+        links: [
+          { type: 'github', href: 'https://github.com/cworld1/astro-theme-pure' },
+          { type: 'doc', href: 'https://github.com/cworld1/astro-theme-pure/blob/main/src/content/blog/customize/index.md' }
+        ]
+      }
+    ]}
+  />
+  <Collapse title='Some old projects'>
+    <ProjectSection
+      projects={[
+        // {
+        //   name: 'Search Switcher',
+        //   description: 'Add links to each other in search engines',
+        //   links: [{ type: 'github', href: 'https://github.com/cworld1/search-switcher' }]
+        // },
+        // {
+        //   name: 'Pure Baidu',
+        //   description: 'Baidu search page beautification module',
+        //   links: [
+        //     { type: 'doc', href: 'https://cworld0.com/blog/pure-baidu' },
+        //     { type: 'site', href: 'https://userstyles.org/styles/173673/pure' }
+        //   ]
+        // }
+      ]}
+    />
+  </Collapse>
+
+  <!-- {/* GPG */}
+  <h2 id="gpg-signature">GPG Signature</h2>
+  <p>
+    릴리즈 파일 서명을 검증하려면 제 GPG 키를 사용하세요. 키 ID는 <code>YOUR_KEY_ID</code> 입니다.
+  </p>
+  <Button href="https://keys.openpgp.org/" title="Find my key" target="_blank">
+    <KeyIcon class="size-5" slot="before" />
+  </Button>
+
+  {/* Sponsorship */}
+  <h2 id="sponsorship">Sponsorship</h2>
+  <p>후원해 주시면 큰 힘이 됩니다. 후원 후 연락 주시면 감사 인사를 전할게요 🙏</p>
+  <Sponsorship
+    methods={[
+      { name: 'WeChat', icon: 'wechat-pay', image: wechat },
+      { name: 'Alipay', icon: 'alipay', image: alipay }
+    ]}
+  />
+  <p>Thanks to the following sponsors:</p>
+  <Sponsors
+    sponsors={[
+      // 예시 데이터 — 실제 후원 내역으로 교체
+      { name: 'Anonymous', amount: '10.00', date: '2024-09-01' }
+    ]}
+  /> -->
+
+  {/* About Blog / 히스토리 */}
+  <h2 id="about-blog">About Blog</h2>
+  <Timeline
+    events={[
+      { date: '2025-09-08', content: '테마 커스터마이징 & 다크모드 정리' },
+      { date: '2025-09-10', content: '프로젝트 아카이브/코멘트 시스템(Giscus) 도입' }
+    ]}
+  />
+</PageLayout>

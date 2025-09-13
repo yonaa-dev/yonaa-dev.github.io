@@ -1,0 +1,174 @@
+---
+title: "NETFLEX — Clone with React"
+description: "React와 Bootstrap을 활용해 Netflix UI를 클론 코딩한 스터디 프로젝트입니다. Bootstrap Grid와 Card를 활용한 반응형 UI, hover 인터랙션, 컴포넌트 구조화를 학습했고 Vercel에 배포했습니다."
+pubDate: "2024-09-07"
+tags: ["React", "Bootstrap", "JavaScript", "UI Clone", "Study", "Vercel"]
+slug: "2409-react-netflex"
+locale: "ko"
+category: "study"
+heroImage:
+  src: "../../assets/notion/26a10b9ff7268024a965ed546b45b8d4/5a425d21-cover.webp"
+  alt: "NETFLEX 메인 화면"
+  color: "#E50914"
+updatedDate: "2025-09-11T16:40:00.000Z"
+---
+
+**프로젝트명**: NETFLEX (Netflix Clone)
+
+
+**기간**: Sep 2023 (~1 day)
+
+
+**역할**: 개인 스터디 (프론트엔드 전반)
+
+
+**배포**: [Vercel 배포본](https://netflix-demo-rose.vercel.app/)
+
+
+**코드**: [GitHub Repository](https://github.com/theh4ru/Netflix-Demo)
+
+
+## 1. 프로젝트 소개
+
+
+이 프로젝트는 **React 학습**과 함께, **Bootstrap을 처음 적용**해본 경험을 기록하기 위해 진행한 **Netflix UI 클론 코딩**입니다.
+
+
+넷플릭스의 UI 구성을 참고하여 **레이아웃, 카드 리스트, 반응형 UI**를 구현했고, Bootstrap 컴포넌트와 유틸리티 클래스를 활용해 **개발 속도를 높이고 스타일링을 단순화**했습니다.
+
+
+최종 결과물은 Vercel에 배포해 실제 서비스처럼 접근할 수 있습니다.
+
+
+## 2. 기술 스택
+
+- **Frontend**: React (Create React App)
+- **스타일링**: Bootstrap 5 + 커스텀 CSS
+- **언어**: JavaScript
+- **배포**: Vercel
+
+## 3. 주요 기능
+
+- **홈 화면 구성**
+    - 배너, 영화 카드 리스트(Row), 네비게이션 바
+- **Bootstrap 컴포넌트 활용**
+    - Grid 시스템을 활용한 반응형 레이아웃
+    - Card 컴포넌트 기반 영화 썸네일 UI
+- **hover 효과 & UX 개선**
+    - Bootstrap 유틸리티 클래스 + 커스텀 CSS 조합
+- **반응형 디자인**
+    - Breakpoints(`col-6`, `col-md-3` 등)로 모바일/데스크톱 대응
+1. 메인 히어로/배너
+
+    ![image1.png](/assets/notion/26a10b9ff7268024a965ed546b45b8d4/76f0099e-image1.png)
+
+2. Bootstrap Grid 기반 카드 리스트
+
+    ![image2.png](/assets/notion/26a10b9ff7268024a965ed546b45b8d4/229ea84b-image2.png)
+
+3. 카드 hover 상태 (그림자 효과)
+
+    ![image3.png](/assets/notion/26a10b9ff7268024a965ed546b45b8d4/ac6011a1-image3.png)
+
+4. 모바일 vs 데스크톱 레이아웃 비교
+
+![image4.png](/assets/notion/26a10b9ff7268024a965ed546b45b8d4/da540cb2-image4.png)
+
+
+![image5.png](/assets/notion/26a10b9ff7268024a965ed546b45b8d4/ddd84060-image5.png)
+
+
+## 4. 코드 예시 (학습 포인트)
+
+
+### Bootstrap Grid 기반 영화 리스트
+
+
+```javascript
+<div className="container">
+  <h2 className="mb-3">{title}</h2>
+  <div className="row">
+    {movies.map((movie) => (
+      <div className="col-6 col-md-3 mb-4" key={movie.id}>
+        <div className="card h-100">
+          <img src={movie.poster} className="card-img-top" alt={movie.title} />
+          <div className="card-body">
+            <h6 className="card-title">{movie.title}</h6>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+```
+
+
+### Bootstrap + 커스텀 hover 효과
+
+
+```css
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+```
+
+
+### 데이터 패칭 유틸 (확장 대비)
+
+
+```javascript
+// lib/fetcher.js
+export async function fetchJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+```
+
+
+## 5. 폴더 구조 (권장)
+
+
+```plain text
+src/
+  components/   // Header, Row, Card 등
+  pages/        // Home (추후 Search, Detail 확장 가능)
+  lib/          // fetcher, API 클라이언트
+  styles/       // 전역/컴포넌트 CSS
+  assets/       // 이미지/아이콘
+```
+
+- 작은 규모라도 구조를 잡아두면 API 확장, 라우팅 추가 시 유지보수성이 좋아집니다.
+
+## 6. 배운 점
+
+- **React 컴포넌트 구조화**
+    - UI를 작은 단위로 쪼개고 props로 연결하는 방식 학습
+- **Bootstrap 활용**
+    - Grid, Card, Utility 클래스로 빠른 UI 조립 경험
+    - CSS를 직접 작성하던 습관에서 벗어나 프레임워크 활용법 익힘
+- **Bootstrap + 커스텀 CSS 조합**
+    - 기본 제공 스타일에 작은 효과를 덧입히는 방법 이해
+- **배포 경험**
+    - CRA 빌드 → Vercel 배포로 “만들고 공유” 사이클 체득
+
+## 7. 정리
+
+
+이번 **Netflix 클론(“NETFLEX”) 프로젝트**는 단순히 React 학습을 넘어서,
+
+- **Bootstrap 첫 적용**
+- **반응형 UI 설계**
+- **배포 경험**
+
+까지 아우른 의미 있는 스터디였습니다.
+
+
+앞으로는 Bootstrap뿐 아니라 **TailwindCSS**, **styled-components** 등을 시도해 비교하고,
+
+
+API 연동과 상세 페이지를 추가해 더욱 실용적인 서비스로 확장해보고자 합니다.

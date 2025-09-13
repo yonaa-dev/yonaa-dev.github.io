@@ -1,0 +1,77 @@
+---
+import type { MarkdownHeading } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+
+// Blog 포스트가 쓰던 UI들 재사용
+import 'katex/dist/katex.min.css'
+
+import { MediumZoom } from 'astro-pure/advanced'
+import { ArticleBottom, Hero, TOC } from 'astro-pure/components/pages'
+import Copyright from '@/components/Copyright.astro'
+import PageLayout from '@/layouts/ContentLayout.astro'
+import { integ } from '@/site-config'
+import Giscus from '@/components/Giscus.astro'
+
+
+interface Props {
+  project: CollectionEntry<'projects'>
+  projects?: CollectionEntry<'projects'>[]   // 추천/하단 목록에 쓸 수 있음(선택)
+  headings: MarkdownHeading[]
+  remarkPluginFrontmatter: Record<string, unknown>
+}
+
+const { project, projects = [], headings, remarkPluginFrontmatter } = Astro.props
+
+// 단일 글을 블로그 포맷으로 매핑
+const blogLike: any = {
+  ...project,
+  collection: 'blog', // 내부 컴포넌트가 collection 체크하는 경우 대비
+  data: {
+    title: project.data.title,
+    description: project.data.description ?? '',
+    publishDate: project.data.pubDate,            // pubDate → publishDate
+    updatedDate: (project.data as any).updatedDate,
+    tags: project.data.tags ?? [],
+    heroImage: project.data.heroImage,
+    draft: project.data.draft ?? false,           // 기본값
+    // 프로젝트는 기본 켬. 개별 글에서 comment:false로 끌 수 있음
+    comment: (project.data as any).comment ?? true,
+    locale: project.data.locale,
+    slug: project.data.slug
+  }
+}
+
+const data = blogLike.data
+const socialImage = data.heroImage
+  ? (typeof data.heroImage.src === 'string' ? data.heroImage.src : data.heroImage.src.src)
+  : '/images/social-card.png'
+const articleDate = data.updatedDate?.toISOString() ?? data.publishDate.toISOString()
+const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opacity))'
+---
+
+<PageLayout
+  meta={{ articleDate, description: data.description, ogImage: socialImage, title: data.title }}
+  highlightColor={primaryColor}
+  back='/projects'
+>
+  {!!headings.length && <TOC {headings} slot='sidebar' />}
+
+  <Hero data={data} {remarkPluginFrontmatter} slot='header'>
+    <Fragment slot='description'>
+      {!data.draft && data.comment && <span class="mt-1 text-sm text-muted-foreground">댓글을 환영해요 🙌</span>}
+    </Fragment>
+  </Hero>
+
+  <slot />
+
+  <Fragment slot='bottom'>
+    <Copyright data={data} />
+    {/* 추천 섹션: projects를 같은 방식으로 매핑해 넘기면 사용 가능. 간단히 생략해도 됨 */}
+    <ArticleBottom collections={projects} id={project.id} class='mt-3 sm:mt-6' />
+    {!data.draft && data.comment && <Giscus />}
+  </Fragment>
+
+  <slot name='bottom-sidebar' slot='bottom-sidebar' />
+</PageLayout>
+
+{integ.mediumZoom.enable && <MediumZoom />}

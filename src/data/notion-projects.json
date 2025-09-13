@@ -1,0 +1,12 @@
+[
+  {
+    "slug": "my-notion-project",
+    "title": "My Notion Project",
+    "description": "설명",
+    "url": "https://github.com/yonaa-dev/...",
+    "coverUrl": "https://prod-files-secure.s3.us-west-2.amazonaws.com/....",
+    "pubDate": "2025-08-30T00:00:00.000Z",
+    "locale": "ko",
+    "tags": ["astro", "notion"]
+  }
+]
