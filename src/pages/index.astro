@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
 
-import { Quote } from 'astro-pure/advanced'
+// import { Quote } from 'astro-pure/advanced'
 import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
 import { Button, Card, Icon, Label, Spoiler } from 'astro-pure/user'
@@ -13,18 +13,35 @@ import SkillLayout from '@/components/home/SkillLayout.astro'
 import avatar from '@/assets/avatar.png'
 import config from '@/site-config'
 
-const languages = ['Html', 'JavaScript', 'CSS', 'Shell']
-const frontend = ['TypeScript', 'Vite', 'Webpack', 'Astro']
-const backend = ['Vercel', 'Waline']
+// const languages = ['Html', 'JavaScript', 'CSS', 'Shell']
+// const frontend = ['TypeScript', 'Vite', 'Webpack', 'Astro']
+// const backend = ['Vercel', 'Waline']
 
 // Blog
 const MAX_POSTS = 10
 const allPosts = await getBlogCollection()
 const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 
-// Projects ✅
+// Projects
 const MAX_PROJECTS = 4
 const allProjects = await getCollection('projects')
+const allProjectsByDate = sortMDByDate(allProjects).slice(0, MAX_PROJECTS)
+
+const toCardImageProps = (hero?: { src?: unknown; alt?: string }) => {
+  const raw = hero?.src
+  const altText = hero?.alt
+
+  // ImageMetadata 판별(최소 속성)
+  const isMeta = raw && typeof raw === 'object'
+    && 'src' in (raw as any) && 'width' in (raw as any) && 'height' in (raw as any)
+
+  if (isMeta) return { image: raw as any, altText }     // ImageMetadata
+  if (typeof raw === 'string') {
+    if (/^https?:\/\//i.test(raw)) return { imageUrl: raw, altText }  // 원격
+    return { imagePath: raw, altText }                                 // 로컬 경로
+  }
+  return { imagePath: '/src/assets/projects/placeholder.png', altText }
+}
 
 // 현재 사이트 기본 언어 기준(ko/en)로 필터하고 pubDate 내림차순 정렬
 const currentLocale = (config.locale?.lang?.startsWith('en') ? 'en' : 'ko') as 'ko' | 'en'
@@ -33,23 +50,21 @@ const projectsForCards = allProjects
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, MAX_PROJECTS)
   .map((p) => {
-    // 라우팅: /projects/[slug] (영문이면 /en/projects/[slug])
     const href =
       currentLocale === 'ko'
-        ? `/en/projects/${p.data.slug}`
-        : `/projects/${p.data.slug}`
+        ? `/projects/${p.data.slug}`
+        : `/en/projects/${p.data.slug}`
 
-    // heroImage는 image() 타입(ImageMetadata)일 수 있음 → 문자열 경로로 안전하게 변환
-    const imagePath =
-      (p.data.heroImage?.src as any)?.src // ImageMetadata → 최종 경로
-      ?? p.data.heroImage?.src             // 혹시 문자열 경로로 저장한 경우
-      ?? '/src/assets/projects/placeholder.jpg' // 폴백
+    const { image, imagePath, imageUrl, altText } = toCardImageProps(p.data.heroImage)
 
     return {
       href,
       heading: p.data.title,
       subheading: p.data.description ?? '',
-      imagePath
+      image,
+      imagePath,
+      imageUrl,
+      altText
     }
   })
 ---
@@ -82,15 +97,6 @@ const projectsForCards = allProjects
         </div>
       </div>
 
-      {/* Get template */}
-      <!-- <a
-        href='https://github.com/cworld1/astro-theme-pure'
-        target='_blank'
-        class='flex flex-row items-center gap-x-3 rounded-full border bg-background px-4 py-2 text-sm shadow-sm transition-shadow hover:shadow-md'
-      >
-        <span class='relative flex items-center justify-center'>
-        </span>
-      </a> -->
     </section>
 
     <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
@@ -117,114 +123,24 @@ const projectsForCards = allProjects
       }
 
       {
-        /* <Section title='Experience'>
-      <Card
-        heading='Lorem Ipsum'
-        subheading='Sit amet consectetur'
-        date='Dec 2022 - Nov 2023'
-        imagePath='/src/assets/about-astro.png'
-        altText='Lorem, ipsum dolor sit'
-        imageClass='h-12 w-auto md:-start-16'
-      >
-        <ul class='ms-4 list-disc text-muted-foreground'>
-          <li>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore debitis recusandae, ut
-            molestiae laboriosam pariatur!
-
-            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, pariatur!</li>
-          </li>
-        </ul>
-      </Card>
-      <Card
-        heading='Lorem Ipsum'
-        subheading='Sit amet consectetur'
-        date='Dec 2022 - Nov 2023'
-        imagePath='/src/assets/about-astro.png'
-        altText='Lorem, ipsum dolor sit'
-        imageClass='h-12 w-auto md:-start-16'
-      />
-    </Section> */
+        allProjectsByDate.length > 0 && (
+          <Section title='Projects'>
+            <div class='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+              {projectsForCards.map((p) => (
+                // <ProjectCard
+                //   href={p.href}
+                //   heading={p.heading}
+                //   subheading={p.subheading}
+                //   imagePath={p.imagePath}
+                // />
+                <ProjectCard
+                  {...p}
+                />
+              ))}
+            </div>
+            <Button title='More projects' class='w-fit self-end' href='/projects' variant='ahead' />
+          </Section>
+        )
       }
-      <!-- <Section title='Education'>
-        <Card
-          as='a'
-          heading='Lorem ipsum'
-          subheading='Lorem ipsum dolor sit amet, vidit suscipit at mei.'
-          date='August 2021 - July 2025'
-          href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-        >
-          {
-            /* <ul class='ms-4 list-disc text-muted-foreground'>
-          <li>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore debitis recusandae, ut
-            molestiae laboriosam pariatur!
-          </li>
-          <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, pariatur!</li>
-        </ul> */
-          }
-        </Card>
-      </Section> -->
-
-      <Section title='Projects'>
-        <div class='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-          <!-- <ProjectCard
-            href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            heading='Lorem ipsum'
-            subheading='dolor sit amet, oratio ornatus explicari pro ex'
-            imagePath='/src/assets/projects/alex-tyson-2BAXJ7ha74s-unsplash.jpg'
-          />
-          <ProjectCard
-            href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            heading='Lorem ipsum'
-            subheading='dolor sit amet, oratio ornatus explicari pro ex'
-            imagePath='/src/assets/projects/angelica-teran-Bk9hpaXHK4o-unsplash.jpg'
-          />
-          <ProjectCard
-            href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            heading='Lorem ipsum'
-            subheading='dolor sit amet, oratio ornatus explicari pro ex'
-            imagePath='/src/assets/projects/kseniia-zapiatkina-yATU3rg8tNI-unsplash.jpg'
-          />
-          <ProjectCard
-            href='/projects'
-            heading='More projects'
-            subheading='Check out more projects'
-            imagePath='/src/assets/projects/wen-qiao-g_w8I64FiO0-unsplash.jpg'
-          /> -->
-          {projectsForCards.map((p) => (
-            <ProjectCard
-              href={p.href}
-              heading={p.heading}
-              subheading={p.subheading}
-              imagePath={p.imagePath}
-            />
-          ))}
-          <ProjectCard
-            href='/projects'
-            heading='More projects'
-            subheading='Check out more projects'
-            imagePath='/src/assets/projects/wen-qiao-g_w8I64FiO0-unsplash.jpg'
-          />
-        </div>
-        <Button title='More projects' class='w-fit self-end' href='/projects' variant='ahead' />
-      </Section>
-
-      <!-- <Section title='Certifications'>
-        <Card
-          as='a'
-          heading='Lorem ipsum'
-          subheading='Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel, at eum oratio possit voluptatum. Dicat ceteros cu vim. Impetus fuisset ullamcorper pri cu, his posse iisque ad, aliquam honestatis usu id.'
-          date='July 2024'
-          href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-        />
-      </Section> -->
-
-      <!-- <Section title='Skills'>
-        <SkillLayout title='Languages' skills={languages} />
-        <SkillLayout title='Frontend' skills={frontend} />
-        <SkillLayout title='Backend' skills={backend} />
-      </Section> -->
-    </div>
-    <!-- <Quote class='mt-12' /> -->
-  </main>
+      </main>
 </PageLayout>
