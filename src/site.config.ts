@@ -32,12 +32,6 @@ export const theme: ThemeUserConfig = {
 
   // 아직 테스트 중
   head: [
-    /* 텔레그램 채널 */
-    // {
-    //   tag: 'meta',
-    //   attrs: { name: 'telegram:channel', content: '@cworld0_cn' },
-    //   content: ''
-    // }
   ],
   customCss: [],
 
@@ -55,26 +49,19 @@ export const theme: ThemeUserConfig = {
   /** 사이트의 푸터 설정 */
   footer: {
     // Year format
-    year: `© ${new Date().getFullYear()}`,
-    // year: `© 2019 - ${new Date().getFullYear()}`,
+    year: `© 2025 - ${new Date().getFullYear()}`,
     links: [
-      { title: 'English Blog', link: '/en/blog' },
-      { title: 'English Projects', link: '/en/projects' },
-      { title: 'Search', link: '/search' },
-      { title: 'About', link: '/about' },
       { title: 'GitHub', link: '/profile/git-hub' },
       { title: 'LinkedIn', link: '/profile/linked-in' },
       { title: 'Velog', link: '/profile/velog' }
     ],
     /** 사이트 푸터에 “Astro & Pure theme powered” 링크를 표시할지 여부 */
-    credits: true,
+    credits: false,
     /** 이 사이트의 소셜 미디어 계정 정보 (선택 사항). */
     social: {
-      github: 'https://github.com/yonaa-dev'
+      email: 'mailto:imyona101@gmail.com',
+      github: 'https://github.com/yonaa-dev',
       // x: 'https://x.com/your_id',
-      // linkedin: 'https://www.linkedin.com/in/your_id/',
-      // email: 'mailto:you@example.com',
-      // velog: 'https://velog.io/@your_id'
     }
   },
 
@@ -113,7 +100,7 @@ export const integ: IntegrationUserConfig = {
     applyTip: [
       { name: 'Name', val: theme.title },
       { name: 'Desc', val: theme.description || 'Null' },
-      { name: 'Link', val: 'https://yoursite.example.com/' },
+      { name: 'Link', val: 'https://yonaa-dev.github.io/' },
       { name: 'Avatar', val: '/images/avatar.png' }
     ]
   },
@@ -148,7 +135,7 @@ export const integ: IntegrationUserConfig = {
   // 댓글 시스템
   waline: {
     // 자체 서버가 없으면 잠시 꺼두기
-    enable: false,
+    enable: false
   }
 }
 
