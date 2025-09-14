@@ -1,4 +1,4 @@
-# My Blog & Portfolio (Astro 5 + Tailwind v4 + Notion Cache)
+# Personal blog powered by Astro & GitHub Pages
 
 이 저장소는 공개 템플릿을 **개인 블로그 & 포트폴리오** 용도로 커스터마이즈한 프로젝트입니다.
 콘텐츠는 MDX/Notion에서 관리하고, 커버 이미지는 로컬로 캐시해 최적화 렌더링합니다.
@@ -17,7 +17,6 @@
   * `scripts/notion-cache.mjs`로 Notion → MDX & 이미지 동기화
   * 커버: `/src/assets/notion/**`, (선택) 본문: `/public/assets/notion/**`
 * **이미지 최적화**: `astro:assets` + `<Image>`
-* **i18n**: 기본 `ko`(루트), 영어 `/en/*`
 * **SEO**: `astro-seo`, `@astrojs/sitemap`, `@astrojs/rss`
 * **Shiki/KaTeX/Mermaid** 코드/수식/다이어그램 지원
 
@@ -35,9 +34,8 @@ src/
     tools/** styles/app.css avatar.png ...
   components/              # home/projects/about 등 컴포넌트
   content/
-    blog/                  # 기본(ko) 블로그
-    projects/              # 기본(ko) 프로젝트 ← Notion에서 주로 생성
-    en/{blog,projects}/    # 영어 콘텐츠
+    blog/                  # 블로그
+    projects/              # 프로젝트 ← Notion에서 주로 생성
   data/                    # 참고용 JSON 스냅샷
   layouts/                 # 레이아웃
   pages/                   # 라우트(홈/프로젝트/블로그/검색/프로필 등)
@@ -173,14 +171,6 @@ const toCardImageProps = (hero?: { src?: unknown; alt?: string }) => {
   href={`/projects/${entry.slug}`}
 />
 ```
-
----
-
-## 🌐 i18n
-
-* 기본 언어 **ko**: 루트(`/`)
-* 영어 **en**: `/en/*`
-  콘텐츠는 `src/content/en/{blog,projects}`에 작성하면 자동으로 분기됩니다.
 
 ---
 
