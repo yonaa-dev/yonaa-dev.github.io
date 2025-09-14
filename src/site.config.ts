@@ -1,4 +1,8 @@
-import type { CardListData, Config, IntegrationUserConfig, ThemeUserConfig } from 'astro-pure/types'
+import type { CardListData, Config, IntegrationUserConfig, ThemeUserConfig } from 'astro-pure/types';
+
+
+
+
 
 export const theme: ThemeUserConfig = {
   // === 기본 설정 ===
@@ -54,8 +58,13 @@ export const theme: ThemeUserConfig = {
     year: `© ${new Date().getFullYear()}`,
     // year: `© 2019 - ${new Date().getFullYear()}`,
     links: [
-      // 정책 페이지를 만들면 여기에 연결
-      // { title: 'Privacy Policy', link: '/terms/privacy-policy', pos: 2 }
+      { title: 'English Blog', link: '/en/blog' },
+      { title: 'English Projects', link: '/en/projects' },
+      { title: 'Search', link: '/search' },
+      { title: 'About', link: '/about' },
+      { title: 'GitHub', link: '/profile/git-hub' },
+      { title: 'LinkedIn', link: '/profile/linked-in' },
+      { title: 'Velog', link: '/profile/velog' }
     ],
     /** 사이트 푸터에 “Astro & Pure theme powered” 링크를 표시할지 여부 */
     credits: true,
@@ -140,61 +149,24 @@ export const integ: IntegrationUserConfig = {
   waline: {
     // 자체 서버가 없으면 잠시 꺼두기
     enable: false,
-    // 서버 서비스 링크
-    server: 'https://your-waline-server.example.com/',
-    // Refer https://waline.js.org/en/guide/features/emoji.html
-    emoji: ['bmoji'],
-    // Refer https://waline.js.org/en/reference/client/props.html
-    additionalConfigs: {
-      // search: false,
-      pageview: true,
-      comment: true,
-      locale: {
-        reaction0: 'Like',
-        placeholder: '댓글을 남겨주세요. (답장을 받으려면 이메일 입력 필요, 로그인 불필요)'
-      },
-      imageUploader: false
-    }
   }
 }
 
 export const terms: CardListData = {
-  // title: 'Terms content',
-  // list: [
-  //   {
-  //     title: 'Privacy Policy',
-  //     link: '/terms/privacy-policy'
-  //   },
-  //   {
-  //     title: 'Terms and Conditions',
-  //     link: '/terms/terms-and-conditions'
-  //   },
-  //   {
-  //     title: 'Copyright',
-  //     link: '/terms/copyright'
-  //   },
-  //   {
-  //     title: 'Disclaimer',
-  //     link: '/terms/disclaimer'
-  //   }
-  // ]
-  // title: 'Internal Navigation',
-  // list: [
-  //   {
-  //     title: 'About',
-  //     link: '/about',
-  //   },
-  //   {
-  //     title: 'Projects',
-  //     link: '/projects',
-  //   },
-  //   {
-  //     title: 'Archive',
-  //     link: '/archive',
-  //   },
-  // ],
-  title: 'External Profile',
+  title: 'All Links',
   list: [
+    {
+      title: 'About',
+      link: '/about',
+    },
+    {
+      title: 'Projects',
+      link: '/projects',
+    },
+    {
+      title: 'Archive',
+      link: '/archive',
+    },
     {
       title: 'GitHub',
       link: '/profile/git-hub'

@@ -8,7 +8,9 @@
     "node": ">=18.17 <21 || >=22"
   },
   "scripts": {
+    "clean": "rimraf dist .astro \"node_modules/.vite\"",
     "build": "astro build",
+    "rebuild": "npm run clean && npm run build",
     "dev": "astro dev",
     "preview": "astro preview",
     "astro": "astro",
@@ -56,6 +58,7 @@
     "notion-to-md": "^3.1.9",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
+    "rimraf": "^6.0.1",
     "rollup-plugin-visualizer": "^6.0.3",
     "typescript-eslint": "^8.43.0"
   }

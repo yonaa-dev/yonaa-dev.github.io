@@ -1,8 +1,7 @@
-;
-// astro.config.ts
 import { rehypeHeadingIds } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+
 // Integrations
 import tailwind from '@tailwindcss/vite';
 import AstroPureIntegration from 'astro-pure';
@@ -10,12 +9,10 @@ import { defineConfig } from 'astro/config';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 
-
 // Local plugins
 import rehypeAutolinkHeadings from './src/plugins/rehype-auto-link-headings.ts';
 import { addCopyButton, addLanguage, addTitle, transformerNotationDiff, transformerNotationHighlight, updateStyle } from './src/plugins/shiki-transformers.ts';
 import config from './src/site.config.ts';
-
 
 export default defineConfig({
   // ── Core ─────────────────────────────────────────────────────────────
@@ -29,7 +26,7 @@ export default defineConfig({
     locales: ['ko', 'en'],
     defaultLocale: 'ko',
     routing: { prefixDefaultLocale: false }, // ko는 /, en은 /en/...
-    fallback: { en: 'ko' } // en 문서 없으면 ko로 대체 노출(선택)
+    // fallback: { en: 'ko' } // en 문서 없으면 ko로 대체 노출(선택)
   },
 
   // ── Images ───────────────────────────────────────────────────────────
@@ -81,5 +78,5 @@ export default defineConfig({
   experimental: { contentIntellisense: true },
 
   // ── Vite ─────────────────────────────────────────────────────────────
-  vite: { plugins: [tailwind()] },
+  vite: { plugins: [tailwind()] }
 })
