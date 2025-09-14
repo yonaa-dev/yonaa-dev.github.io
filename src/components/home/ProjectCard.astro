@@ -31,14 +31,27 @@ const {
   altText
 } = Astro.props
 
-// ✅ 패턴 오타 수정: .{avif,webp}
+// 1) 글롭: notion 이하(혹은 전체 assets) 재귀 스캔
 const images = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/projects/*.{jpeg,jpg,png,gif,avif,webp}',
+  // 전체를 쓰고 싶으면 '/src/assets/**/*.{jpeg,jpg,png,gif,avif,webp}' 로
+  // '/src/assets/notion/**/*.{jpeg,jpg,png,gif,avif,webp}',
+  '/src/assets/**/*.{jpeg,jpg,png,gif,avif,webp}',
   { eager: true }
 )
 
-// imagePath가 주어졌으면 글롭에서 찾아봄(없으면 undefined)
-const resolvedFromPath = imagePath ? images[imagePath]?.default : undefined
+// 경로 정규화: \ → /, ../../assets → /src/assets, assets/ → /src/assets
+const normalizeToSrcAbs = (p?: string) => {
+  if (!p) return undefined
+  if (/^https?:\/\//i.test(p)) return p
+  let s = p.replaceAll('\\', '/')
+  if (s.startsWith('/src/')) return s
+  s = s.replace(/^(\.\/|\.\.\/)+assets\//, '/src/assets/')
+  if (s.startsWith('assets/')) s = '/src/' + s
+  return s
+}
+
+const normalizedPath = normalizeToSrcAbs(imagePath)
+const resolvedFromPath = normalizedPath ? images[normalizedPath]?.default : undefined
 
 // 우선순위: ImageMetadata > 로컬경로(glob) > 원격 URL
 const coverMeta: ImageMetadata | undefined = image ?? resolvedFromPath
